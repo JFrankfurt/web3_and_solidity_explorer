@@ -16,7 +16,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "node index.js",
+    "start": "node .next/app.js",
     "deploy": "now -e NODE_ENV=production"
   },
   "devDependencies": {
