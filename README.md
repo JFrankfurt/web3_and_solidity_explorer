@@ -1,5 +1,7 @@
-## Consensys proof of competency
+This lets you click through the web3 api and see how each function works. 
 
-## Possible improvements
-1. Use a service worker for the front end application.
-2. Learn  
+```
+yarn install
+yarn dev
+<go have fun>
+```
