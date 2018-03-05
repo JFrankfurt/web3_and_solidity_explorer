@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.19;
 
 /*
 this is an implementation of the future-like contract described here by V in June 2014:
@@ -10,8 +10,7 @@ contract SchellingCoin {
     uint hashes_submitted;
     uint output;
     string[] users;
-    mapping(address => Account[]) public accounts;
-
+    mapping(address => Account) public accounts;
     struct Account {
         string hash;
         uint deposit;
@@ -23,7 +22,7 @@ contract SchellingCoin {
 
     // todo: a lot
     // can be called to trigger a payout check
-    function check_epoch() {
+    function check_epoch() public {
         if (block.number / 100 > epoch) {
             // sort submitted values
             uint num_hashes = hashes_submitted;
@@ -31,7 +30,7 @@ contract SchellingCoin {
             // refund non-submitters
 
             // reward correct guesses by taxing incorrect ones
-            for (i = 0; i < hashes_submitted.length; i++) {
+            for (uint i = 0; i < num_hashes; i++) {
 
             }
             // clean up
@@ -40,7 +39,7 @@ contract SchellingCoin {
         }
     }
 
-    function submit_hash(string hash) {
+    function submit_hash(string hash) public {
         if (block.number % 100 < 50) {
             hashes_submitted += 1;
             accounts[msg.sender] = Account({
@@ -51,7 +50,7 @@ contract SchellingCoin {
     }
 
     // send your guesses
-    function submit_value() payable {
+    function submit_value() public payable {
 
     }
 
@@ -60,7 +59,7 @@ contract SchellingCoin {
         return balance;
     }
 
-    function request_output() {
+    function request_output() public returns (uint) {
         return output;
     }
 }

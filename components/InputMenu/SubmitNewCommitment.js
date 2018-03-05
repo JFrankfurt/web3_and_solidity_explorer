@@ -19,11 +19,11 @@ export default class SubmitNewCommitment extends Component {
     return (
       <div className='commitment-root'>
         <h3 className='title'>new commitment</h3>
-        <span className='input'>wei/cent:
+        <span className='input'>USD/ETH:
             <input type="text" placeholder="Price of 1 Eth in USD"
                    value={commitmentValue} onChange={changeCommitment}/>
             </span>
-        <span className='input'>stake:
+        <span className='input'>Stake:
             <input type="text" placeholder="Stake in eth"
                    value={commitmentValue} onChange={changeCommitment}/>
             </span>
