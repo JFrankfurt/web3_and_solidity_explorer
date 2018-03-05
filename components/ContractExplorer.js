@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import InputMenu from './InputMenu/index';
+import ExplanationModal from "./ExplanationModal";
 
 export class ContractExplorer extends Component {
   state = {
@@ -8,11 +9,15 @@ export class ContractExplorer extends Component {
     showModal: false,
   };
 
+  toggleModal = () =>
+    this.setState(({showModal}) => ({showModal: !showModal}));
+
   render() {
     const {showModal} = this.state;
+    const {toggleModal} = this;
     return (
       <Fragment>
-        {showModal ? <div className='modal'>test</div> : null}
+        {showModal ? <ExplanationModal close={toggleModal}/> : null}
         <div className='contract-root'>
           <InputMenu {...this.state}/>
           <div className='epoch'>
@@ -20,12 +25,15 @@ export class ContractExplorer extends Component {
             <div className='epoch-list'>
             </div>
           </div>
-          <style jsx>{`
+          <span className='help' onClick={toggleModal}>?</span>
+        </div>
+        <style jsx>{`
           .contract-root {
-            width: 800px;
             display: grid;
             grid-template-columns: 2fr 3fr;
             grid-column-gap: 25px;
+            position: relative;
+            width: 800px;
           }
           .epoch {
             background-color: #f0f0f0;
@@ -37,8 +45,24 @@ export class ContractExplorer extends Component {
           .epoch-list {
             display: flex;
             flex-direction: column;
-            height: 100%;
             overflow-y: auto;
+            height: 350px;
+          }
+          .help {
+            align-items: center;
+            background-color: #f8f8f8;
+            border: 1px solid grey;
+            border-radius: 50%;
+            color: grey;
+            cursor: pointer;
+            display: flex;
+            font-weight: bold;
+            font-size: 110%;
+            height: 25px;
+            justify-content: center;
+            position: absolute;
+            top: -30px;
+            width: 25px;
           }
           input {
             border: 1px solid #33ffcc;
@@ -56,7 +80,6 @@ export class ContractExplorer extends Component {
             background-color: #f0f0f0;
           }
         `}</style>
-        </div>
       </Fragment>
     );
   }
