@@ -180,7 +180,7 @@ export default class NetworkExplorer extends Component {
   render() {
     const {data, explain, functions} = this.state;
     return (
-      <div className='root'>
+      <div className='network-root'>
         <h2 className='header'>Web3's&nbsp;
           <pre>eth</pre>
           &nbsp;API
@@ -194,7 +194,7 @@ export default class NetworkExplorer extends Component {
         </div>
         <pre>some undocumented api surface here is left unimplemented (i.e., eth.getBlockUncleCount)</pre>
         <style jsx>{`
-        .root {
+        .network-root {
           display: grid;
           grid-template-rows: 40px auto auto auto 20px;
           max-width: 800px;
