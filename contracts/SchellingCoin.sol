@@ -1,9 +1,7 @@
 pragma solidity ^0.4.19;
 
-/*
-this is an implementation of the future-like contract described here by V in June 2014:
-    https://blog.ethereum.org/2014/06/30/advanced-contract-programming-example-schellingcoin/
-*/
+//this is an implementation of the future-like contract described here by V in June 2014:
+//    https://blog.ethereum.org/2014/06/30/advanced-contract-programming-example-schellingcoin/
 contract SchellingCoin {
     uint epoch;
     uint balance;

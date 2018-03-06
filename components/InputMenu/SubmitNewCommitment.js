@@ -71,8 +71,14 @@ export default class SubmitNewCommitment extends Component {
             padding: 0 12px;
             width: 100%;
           }
+          input {
+            border: 1px solid black;
+            border-radius: 1px;
+            outline: none;
+            padding: 1px 4px;
+          }
           input:focus {
-            outline: 1px solid #33ffce;
+            border-color: #33ffce;
           }
           .title {
             background-color: #33ffce;

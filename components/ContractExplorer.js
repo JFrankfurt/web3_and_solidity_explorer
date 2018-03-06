@@ -70,12 +70,6 @@ export class ContractExplorer extends Component {
             color: black;
             border-color: black;
           }
-          input {
-            border: 1px solid #33ffcc;
-            border-radius: 1px;
-            outline: none;
-            padding: 1px 4px;
-          }
           .title {
             background-color: #33ffce;
             margin-bottom: 6px;
