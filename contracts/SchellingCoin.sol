@@ -7,30 +7,37 @@ this is an implementation of the future-like contract described here by V in Jun
 contract SchellingCoin {
     uint epoch;
     uint balance;
-    uint hashes_submitted;
     uint output;
-    string[] users;
-    mapping(address => Account) public accounts;
-    struct Account {
-        string hash;
-        uint deposit;
+
+    struct Accounts {
+        mapping(address => IndexValue) data;
+        KeyFlag[] keys;
+        uint size;
+    }
+
+    struct IndexValue {
+        uint keyIndex;
+        uint value; // amount staked
+        bytes32 hash; // keccak256(sender's address, price estimate)
+    }
+
+    struct KeyFlag {
+        uint key;
+        bool deleted;
     }
 
     function SchellingCoin() public {
         epoch = block.number / 100;
     }
 
-    // todo: a lot
     // can be called to trigger a payout check
     function check_epoch() public {
         if (block.number / 100 > epoch) {
-            // sort submitted values
-            uint num_hashes = hashes_submitted;
-            // calculate total deposit
+            // calculate total stake
             // refund non-submitters
 
             // reward correct guesses by taxing incorrect ones
-            for (uint i = 0; i < num_hashes; i++) {
+            for (uint i = 0; i < users.length; i++) {
 
             }
             // clean up
@@ -39,19 +46,23 @@ contract SchellingCoin {
         }
     }
 
-    function submit_hash(string hash) public {
+    // submit your commitment
+    function submit_hash(bytes32 hash) public payable {
         if (block.number % 100 < 50) {
             hashes_submitted += 1;
-            accounts[msg.sender] = Account({
-                hash: hash,
-                deposit: msg.value
-            });
+            accounts[msg.sender] = Account({hash : hash, value : msg.value});
+            users.push(msg.sender);
         }
     }
 
-    // send your guesses
-    function submit_value() public payable {
-
+    // submit proof of your guess
+    function submit_value(uint guess) public returns (bool){
+        if (keccak256(msg.sender, guess) == accounts[msg.sender].hash) {
+            guesses[msg.sender].guess = guess;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // checks the currently outstanding balance of the contract

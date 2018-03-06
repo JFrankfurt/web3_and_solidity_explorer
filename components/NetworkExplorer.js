@@ -118,8 +118,8 @@ export default class NetworkExplorer extends Component {
         );
       case 'getTransactionCount':
         return eth.getTransactionCount(
-          '0x47d47ba358a471d2f88a04bb96bb203242d3d6d2b32df2b8f3e55e4f1a386faf',
-          callback(explanation('Get the numbers of transactions sent from an address. ("0x47d47ba358a471d2f88a04bb96bb203242d3d6d2b32df2b8f3e55e4f1a386faf" here)'))
+          '0x6f4d027a2335866E4Bf7979e7a3e5bf75495906e',
+          callback(explanation('Get the numbers of transactions sent from an address. ("0x6f4d027a2335866E4Bf7979e7a3e5bf75495906e" here)'))
         );
       case 'sendTransaction':
         const res = {
