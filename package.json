@@ -17,10 +17,8 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "node server.js NODE_ENV=production",
-    "deploy": "now -e NODE_ENV=production",
-    "heroku-prebuild": "next build",
-    "heroku-postbuild": "next build"
+    "start": "NODE_ENV=production node server.js",
+    "deploy": "now -e NODE_ENV=production"
   },
   "devDependencies": {
     "truffle": "^4.1.0"
