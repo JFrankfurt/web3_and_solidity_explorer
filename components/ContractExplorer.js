@@ -63,6 +63,12 @@ export class ContractExplorer extends Component {
             position: absolute;
             top: -30px;
             width: 25px;
+            transition: 300ms ease all;
+          }
+          .help:hover {
+            background-color: #33ffc3;
+            color: black;
+            border-color: black;
           }
           input {
             border: 1px solid #33ffcc;

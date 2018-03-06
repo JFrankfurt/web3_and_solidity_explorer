@@ -15,7 +15,7 @@ export default ({close}) =>
         display: flex;
         height: 100vh;
         justify-content: center;
-        left: 0px;
+        left: 0;
         position: absolute;
         top: 0;
         width: 100vw;

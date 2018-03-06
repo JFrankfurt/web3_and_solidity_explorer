@@ -2,11 +2,12 @@ import React, {Component} from 'react'
 
 export default class SubmitNewCommitment extends Component {
   state = {
-    commitmentValue: '',
+    commitment: '',
+    stake: ''
   };
-  changeCommitment = e => {
+  change = e => {
     if (!isNaN(parseInt(e.target.value)) || e.target.value === '') {
-      this.setState({commitmentValue: e.target.value});
+      this.setState({[e.target.name]: e.target.value});
     }
   };
   submitCommitment = () => {
@@ -14,18 +15,18 @@ export default class SubmitNewCommitment extends Component {
   };
 
   render() {
-    const {commitmentValue} = this.state;
-    const {changeCommitment, submitCommitment} = this;
+    const {commitment, stake} = this.state;
+    const {change, submitCommitment} = this;
     return (
       <div className='commitment-root'>
         <h3 className='title'>new commitment</h3>
         <span className='input'>USD/ETH:
-            <input type="text" placeholder="Price of 1 Eth in USD"
-                   value={commitmentValue} onChange={changeCommitment}/>
+            <input type="text" placeholder="Price of 1 Eth in USD" name="commitment"
+                   value={commitment} onChange={change}/>
             </span>
-        <span className='input'>Stake:
-            <input type="text" placeholder="Stake in eth"
-                   value={commitmentValue} onChange={changeCommitment}/>
+        <span className='input'>Stake (ETH):
+            <input type="text" placeholder="Stake in eth" name="stake"
+                   value={stake} onChange={change}/>
             </span>
         <span className="button" onClick={submitCommitment}>Submit</span>
         <style jsx>{`
