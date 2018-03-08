@@ -15,8 +15,10 @@ contract SchellingCoin {
     }
 
     struct Account {
+        bool deleted;
         uint guess;
         bytes32 hash; // keccak256(sender's address, price estimate)
+        bool in_the_money;
         uint value; // amount staked
     }
 
@@ -36,17 +38,22 @@ contract SchellingCoin {
             // refund non-submitters
             for (uint i = 1; i <= users.addresses.length; i++) {
                 uint guess = users.accounts[users.addresses[i]].guess;
-                if (guess >= low_cutoff && guess <= high_cutoff) {
-
+                if (guess == 0) {
+                    // refund these users
+                } else if (guess >= low_cutoff && guess <= high_cutoff) {
+                    users.accounts[users.addresses[i]].in_the_money = true;
+                    balance = balance + users.accounts[users.addresses[i]].value;
+                } else {
+                    // users.addresses[i].transfer(users.addresses[i].value * 999 / 1000);
                 }
             }
-            // clean up
+
             epoch = block.number / 100;
         }
     }
 
     function percent(uint numerator, uint denominator, uint precision) private pure returns (uint) {
-        return ((numerator * 10 ** (precision+1) / denominator) + 5) / 10;
+        return ((numerator * 10 ** (precision + 1) / denominator) + 5) / 10;
     }
     // submit your commitment
     function submit_hash(bytes32 hash) public payable {
@@ -54,9 +61,11 @@ contract SchellingCoin {
         // don't let users submit more than once per epoch.
         if (block.number % 100 < 50) {
             users.accounts[msg.sender] = Account({
-                guess: 0, //I'm just using 0 as a filler until we get the real thing
-                hash: hash,
-                value: msg.value
+                deleted : false,
+                guess : 0, //I'm just using 0 as a filler until we get the real thing
+                hash : hash,
+                in_the_money : false,
+                value : msg.value
                 });
             if (users.addresses.length == 0) {
                 users.addresses.push(0);

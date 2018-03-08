@@ -3,11 +3,12 @@ import getContract from "./getContract";
 import getAccounts from "./getAccounts";
 import getWeb3 from "./getWeb3";
 import contractDefinition from '../../build/contracts/SchellingCoin.json'
+import {Loader} from "../Loader";
 
 export class WithWeb3 extends Component {
   static defaultProps = {
     network: 'Rinkeby',
-    renderLoading: () => <div>Loading...</div>
+    renderLoading: () => <Loader/>
   };
   state = {
     error: null,
@@ -31,6 +32,6 @@ export class WithWeb3 extends Component {
     const {web3, accounts, contract, error} = this.state;
     return web3 && accounts
       ? this.props.render({accounts, contract, error, web3})
-      : this.props.renderLoading({error})
+      : this.props.renderLoading()
   }
 }

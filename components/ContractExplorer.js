@@ -14,15 +14,18 @@ export class ContractExplorer extends Component {
 
   render() {
     const {showModal} = this.state;
+    const {accounts} = this.props.web3.eth;
     const {toggleModal} = this;
     return (
       <Fragment>
         {showModal ? <ExplanationModal close={toggleModal}/> : null}
+        <div>current account: {accounts[0]}</div>
         <div className='contract-root'>
-          <InputMenu {...this.state}/>
+          <InputMenu {...this.state} {...this.props}/>
           <div className='epoch'>
             <h3 className='title'>past epochs</h3>
             <div className='epoch-list'>
+              get past payout results somehow?
             </div>
           </div>
           <span className='help' onClick={toggleModal}>?</span>

@@ -7,7 +7,6 @@ export default () =>
   <Layout>
     <WithWeb3
       network={'Rinkeby'}
-      renderLoading={() => <div>loading...</div>}
       render={props => <ContractExplorer {...props}/>}/>
   </Layout>;
 

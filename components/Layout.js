@@ -17,8 +17,9 @@ export default ({children}) => (
           height: 100vh;
           width: 100vw;
           display: grid;
-          grid-template-rows: 40px auto;
-          align-items: center;
+          grid-row-gap: 36px;
+          grid-template-rows: 40px 40px auto;
+          align-items: flex-start;
           justify-content: center;
         }
         .navigation {
