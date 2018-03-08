@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.20;
 
 //this is an implementation of the future-like contract described here by V in June 2014:
 //    https://blog.ethereum.org/2014/06/30/advanced-contract-programming-example-schellingcoin/
@@ -10,19 +10,14 @@ contract SchellingCoin {
 
     struct Accounts {
         mapping(address => Account) accounts;
-        Address[] addresses;
+        address[] addresses;
         uint size;
     }
 
     struct Account {
-        uint keyIndex;
-        uint value; // amount staked
+        uint guess;
         bytes32 hash; // keccak256(sender's address, price estimate)
-    }
-
-    struct Address {
-        address key;
-        bool deleted;
+        uint value; // amount staked
     }
 
     function SchellingCoin() public {
@@ -32,47 +27,48 @@ contract SchellingCoin {
     // can be called to trigger a payout check
     function check_epoch() public {
         if (block.number / 100 > epoch) {
-            uint twenty_fifth_percentile_index = arr.length * 0.25;
-            uint seventy_fifth_percentile_index = arr.length * 0.75;
-//            if (arr[index] % 1 == 0) {
-//                return arr[index];
-//            } else {
-//                return arr[Math.round(index)];
-//            }
+            // reorder
+            quickSort(users.addresses, 1, users.addresses.length);
+            // low/high guesses
+            uint low_cutoff = users.accounts[users.addresses[users.addresses.length * percent(25, 100, 2)]].guess;
+            uint high_cutoff = users.accounts[users.addresses[users.addresses.length * percent(75, 100, 2)]].guess;
             // calculate total stake
             // refund non-submitters
+            for (uint i = 1; i <= users.addresses.length; i++) {
+                uint guess = users.accounts[users.addresses[i]].guess;
+                if (guess >= low_cutoff && guess <= high_cutoff) {
 
-            // reward correct guesses by taxing incorrect ones
-            // for (uint i = 0; i < users.length; i++) {}
+                }
+            }
             // clean up
             epoch = block.number / 100;
         }
     }
 
+    function percent(uint numerator, uint denominator, uint precision) private pure returns (uint) {
+        return ((numerator * 10 ** (precision+1) / denominator) + 5) / 10;
+    }
     // submit your commitment
     function submit_hash(bytes32 hash) public payable {
-        if (block.number % 100 < 50 && users.accounts[msg.sender].hash != 0x00) {
+        // make sure that we never assign anything to the 0 index.
+        // don't let users submit more than once per epoch.
+        if (block.number % 100 < 50) {
             users.accounts[msg.sender] = Account({
-                keyIndex: users.addresses.length,
-                value: msg.value,
-                hash: hash
+                guess: 0, //I'm just using 0 as a filler until we get the real thing
+                hash: hash,
+                value: msg.value
                 });
-            users.addresses.push(Address({key: msg.sender, deleted: false}));
+            if (users.addresses.length == 0) {
+                users.addresses.push(0);
+            }
+            users.addresses.push(msg.sender);
         }
     }
 
-    // function submit_value(uint guess) public returns (bool){
-    //     if (keccak256(msg.sender, guess) == accounts[msg.sender].hash) {
-    //         guesses[msg.sender].guess = guess;
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // submit proof of your guess
-    function submit_value(uint guess) public returns (bool replaced) {
-        return guess > 5;
+    function submit_value(uint guess, uint nonce) public {
+        if (keccak256(msg.sender, guess, nonce) == users.accounts[msg.sender].hash) {
+            users.accounts[msg.sender].guess = guess;
+        }
     }
 
     // checks the currently outstanding balance of the contract
@@ -84,22 +80,28 @@ contract SchellingCoin {
         return output;
     }
 
-    function quickSort(uint[] storage arr, uint left, uint right) internal {
+    function quickSort(address[] storage addresses, uint left, uint right) internal {
         uint i = left;
         uint j = right;
-        uint pivot = arr[left + (right - left) / 2];
+        uint pivot = users.accounts[addresses[left + (right - left) / 2]].guess;
         while (i <= j) {
-            while (arr[i] < pivot) i++;
-            while (pivot < arr[j]) j--;
+            while (users.accounts[addresses[i]].guess < pivot) i++;
+            while (pivot < users.accounts[addresses[j]].guess) j--;
             if (i <= j) {
-                (arr[i], arr[j]) = (arr[j], arr[i]);
+                (
+                users.accounts[addresses[i]].guess,
+                users.accounts[addresses[j]].guess
+                ) = (
+                users.accounts[addresses[j]].guess,
+                users.accounts[addresses[i]].guess
+                );
                 i++;
                 j--;
             }
         }
         if (left < j)
-            quickSort(arr, left, j);
+            quickSort(addresses, left, j);
         if (i < right)
-            quickSort(arr, i, right);
+            quickSort(addresses, i, right);
     }
 }
