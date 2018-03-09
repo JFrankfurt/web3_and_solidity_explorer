@@ -19,8 +19,8 @@ export const Meta = () =>
           font-family: 'Open Sans', sans-serif;
         }
         *::selection {
-          background: #33caff;
-          color: #ff3364;
+          background: #33ffce;
+          color: white;
         }
   `}</style>
   </Fragment>;
