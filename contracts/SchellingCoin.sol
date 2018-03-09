@@ -1,8 +1,10 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.18;
 
 //this is an implementation of the future-like contract described here by V in June 2014:
 //    https://blog.ethereum.org/2014/06/30/advanced-contract-programming-example-schellingcoin/
 contract SchellingCoin {
+    event Commit(address user, bytes32 hash);
+    event Reveal(address user, uint value);
     uint epoch;
     uint balance;
     uint output;
@@ -59,25 +61,36 @@ contract SchellingCoin {
     function submit_hash(bytes32 hash) public payable {
         // make sure that we never assign anything to the 0 index.
         // don't let users submit more than once per epoch.
-        if (block.number % 100 < 50) {
-            users.accounts[msg.sender] = Account({
-                deleted : false,
-                guess : 0, //I'm just using 0 as a filler until we get the real thing
-                hash : hash,
-                in_the_money : false,
-                value : msg.value
-                });
+        //if (block.number % 100 < 50) {
+            Account memory a; 
+            a.deleted = false;
+            a.guess = 0; //I'm just using 0 as a filler until we get the real thing
+            a.hash = hash;
+            a.in_the_money = false;
+            a.value = msg.value;
+
+            users.accounts[msg.sender] = a;
+            Commit(msg.sender, hash);
+
             if (users.addresses.length == 0) {
                 users.addresses.push(0);
             }
             users.addresses.push(msg.sender);
-        }
+        //}
+    }
+
+    function testHash(uint guess, uint nonce) public view returns (bytes32) {
+        return keccak256(msg.sender, guess, nonce);
     }
 
     function submit_value(uint guess, uint nonce) public {
         if (keccak256(msg.sender, guess, nonce) == users.accounts[msg.sender].hash) {
             users.accounts[msg.sender].guess = guess;
         }
+    }
+
+    function getGuess(address user) public view returns (uint) {
+      return users.accounts[user].guess;
     }
 
     // checks the currently outstanding balance of the contract

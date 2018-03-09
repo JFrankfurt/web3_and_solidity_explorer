@@ -11,6 +11,7 @@
     "next": "5.0.0",
     "react": "16.2.0",
     "react-dom": "16.2.0",
+    "solidity-sha3": "^0.4.1",
     "truffle-contract": "^3.0.4",
     "web3": "0.20.0"
   },
