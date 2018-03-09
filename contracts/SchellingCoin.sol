@@ -5,6 +5,8 @@ pragma solidity ^0.4.18;
 contract SchellingCoin {
     event Commit(address user, bytes32 hash);
     event Reveal(address user, uint value);
+    event Epoch(uint number);
+
     uint epoch;
     uint balance;
     uint output;
@@ -25,17 +27,17 @@ contract SchellingCoin {
     }
 
     function SchellingCoin() public {
-        epoch = block.number / 100;
+        epoch = block.number / 4;
     }
 
     // can be called to trigger a payout check
     function check_epoch() public {
-        if (block.number / 100 > epoch) {
+        if (block.number / 4 > epoch) {
             // reorder
             quickSort(users.addresses, 1, users.addresses.length);
             // low/high guesses
-            uint low_cutoff = users.accounts[users.addresses[users.addresses.length * percent(25, 100, 2)]].guess;
-            uint high_cutoff = users.accounts[users.addresses[users.addresses.length * percent(75, 100, 2)]].guess;
+            uint low_cutoff = users.accounts[users.addresses[users.addresses.length * 25 / 100]].guess;
+            uint high_cutoff = users.accounts[users.addresses[users.addresses.length * 75 / 100]].guess;
             // calculate total stake
             // refund non-submitters
             for (uint i = 1; i <= users.addresses.length; i++) {
@@ -50,33 +52,27 @@ contract SchellingCoin {
                 }
             }
 
-            epoch = block.number / 100;
+            epoch = block.number / 4;
+            Epoch(epoch);
         }
-    }
-
-    function percent(uint numerator, uint denominator, uint precision) private pure returns (uint) {
-        return ((numerator * 10 ** (precision + 1) / denominator) + 5) / 10;
     }
     // submit your commitment
     function submit_hash(bytes32 hash) public payable {
-        // make sure that we never assign anything to the 0 index.
-        // don't let users submit more than once per epoch.
-        //if (block.number % 100 < 50) {
-            Account memory a; 
-            a.deleted = false;
-            a.guess = 0; //I'm just using 0 as a filler until we get the real thing
-            a.hash = hash;
-            a.in_the_money = false;
-            a.value = msg.value;
-
-            users.accounts[msg.sender] = a;
-            Commit(msg.sender, hash);
-
-            if (users.addresses.length == 0) {
-                users.addresses.push(0);
-            }
-            users.addresses.push(msg.sender);
-        //}
+        require(block.number % 4 < 2);
+        require(users.accounts[msg.sender].hash == 0x00 || users.accounts[msg.sender].deleted == true);
+        Account memory a;
+        a.deleted = false;
+        a.guess = 0;
+        //I'm just using 0 as a filler until we get the real thing
+        a.hash = hash;
+        a.in_the_money = false;
+        a.value = msg.value;
+        users.accounts[msg.sender] = a;
+        Commit(msg.sender, hash);
+        if (users.addresses.length == 0) {
+            users.addresses.push(0);
+        }
+        users.addresses.push(msg.sender);
     }
 
     function testHash(uint guess, uint nonce) public view returns (bytes32) {
@@ -89,8 +85,8 @@ contract SchellingCoin {
         }
     }
 
-    function getGuess(address user) public view returns (uint) {
-      return users.accounts[user].guess;
+    function getGuess(address a) public view returns (uint) {
+        return users.accounts[a].guess;
     }
 
     // checks the currently outstanding balance of the contract

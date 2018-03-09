@@ -41,8 +41,8 @@ export default class SubmitNewCommitment extends Component {
           <input type="text" placeholder="Remember this!" name="nonce" value={nonce} onChange={change}/>
         </span>
         <span className='input'>
-          Stake (WEI):
-          <input type="text" placeholder="Stake in WEI" name="stake" value={stake} onChange={change}/>
+          Stake (ETH):
+          <input type="text" placeholder="Stake in ETH" name="stake" value={stake} onChange={change}/>
         </span>
         <span className="button" onClick={submitHash}>Submit</span>
         <MenuStyles/>
